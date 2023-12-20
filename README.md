@@ -1,24 +1,20 @@
-# README
+## Setup
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+1. **Install dependencies:**
 
-Things you may want to cover:
+    ```bash
+    bundle install
+    ```
+## Running the Application
 
-* Ruby version
+Start the Rails server:
 
-* System dependencies
+```bash
+rails server
+```
 
-* Configuration
+Run tests
 
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+```
+  rspec
+```
