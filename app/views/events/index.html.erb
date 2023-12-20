@@ -1,0 +1,16 @@
+<h2>Events Index Page</h2>
+
+<% if flash[:notice] %>
+  <p class="notice">
+    <%= flash[:notice] %>
+  </p>
+  <% end %>
+
+    <% if flash[:error] %>
+      <p class="error">
+        <%= flash[:error] %>
+      </p>
+      <% end %>
+
+        <%= button_to "Create Event A" , event_a_path, method: :post %>
+          <%= button_to "Create Event B" , event_b_path, method: :post %>
