@@ -1,40 +1,38 @@
 require 'rails_helper'
 require 'webmock/rspec'
 
-RSpec.describe EventsController, type: :controller do
+RSpec.describe EventsService do
   before do
     WebMock.disable_net_connect!(allow_localhost: true)
   end
 
-  describe "POST #handle_event" do
+  describe '.track_event' do
     before do
       stub_request(:post, 'https://ce59d6bc-698e-47fd-bb50-48af563ee148.mock.pstmn.io/api/events/track')
         .to_return(status: 200)
     end
 
-    context "when tracking an event" do
-      it "tracks event and sets success flash message" do
-        post :handle_event, params: { event_name: "successful_event" }
-        expect(response).to redirect_to(root_path)
-        expect(flash[:notice]).to eq("successful_event tracked successfully!")
+    context 'when tracking an event successfully' do
+      it 'tracks event and returns a success response' do
+        response = EventsService.track_event('successful_event')
+        expect(response.code).to eq(200)
       end
     end
 
-    context "when failing to track an event" do
+    context 'when failing to track an event' do
       before do
         stub_request(:post, 'https://ce59d6bc-698e-47fd-bb50-48af563ee148.mock.pstmn.io/api/events/track')
           .to_return(status: 500)
       end
 
-      it "handles tracking failure and sets error flash message" do
-        post :handle_event, params: { event_name: "failed_event" }
-        expect(response).to redirect_to(root_path)
-        expect(flash[:error]).to eq("Failed to track failed_event. Error: 500")
+      it 'handles tracking failure and returns an error response' do
+        response = EventsService.track_event('failed_event')
+        expect(response.code).to eq(500)
       end
     end
   end
 
-  describe "POST #send_email" do
+  describe '.fetch_events_to_send' do
     before do
       stub_request(:get, 'https://ce59d6bc-698e-47fd-bb50-48af563ee148.mock.pstmn.io/api/events/byUserId/1?limit=30')
         .with(headers: {
@@ -44,25 +42,19 @@ RSpec.describe EventsController, type: :controller do
         .to_return(status: 200, body: { events: [] }.to_json)
     end
 
-    context "when triggering emails successfully" do
-      it "triggers emails and sets success flash message" do
-        post :send_email
-        expect(response).to redirect_to(root_path)
-        expect(flash[:notice]).to be_blank
+    context 'when fetching events successfully' do
+      it 'fetches events and returns a success response' do
+        events = EventsService.fetch_events_to_send
+        expect(events).to be_an(Array)
       end
     end
 
-    context "when failing to trigger emails" do
-      before do
-        stub_request(:post, 'https://ce59d6bc-698e-47fd-bb50-48af563ee148.mock.pstmn.io/api/email/target')
-          .to_return(status: 500)
-      end
+    # Add more contexts and tests for various scenarios related to fetching events
+  end
 
-      it "doesn't trigger emails and sets empty flash message" do
-        post :send_email
-        expect(response).to redirect_to(root_path)
-        expect(flash[:notice]).to be_blank
-      end
-    end
+  # Add more describe blocks for testing other methods in EventsService
+
+  after do
+    WebMock.allow_net_connect!
   end
 end

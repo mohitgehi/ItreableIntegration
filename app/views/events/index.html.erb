@@ -3,7 +3,7 @@
 <% if flash[:notice] %>
   <p class="notice">
     <% flash[:notice].split("\n").each do |line| %>
-      <%= line %><br> <!-- Renders each email on a new line -->
+      <%= line %><br>
         <% end %>
   </p>
   <% end %>
