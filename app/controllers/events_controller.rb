@@ -1,41 +1,33 @@
 class EventsController < ApplicationController
   def index
   end
-  def event_a
-    response = HTTParty.post(
-      'https://api.iterable.com/api/events/track',
-      body: 'Click event',
-      headers: {
-        'accept': 'application/json',
-        'content-type': 'application/json',
-      }
-    )
 
-    if response.code == 200
-      flash[:notice] = "Event A tracked successfully!"
-    else
-      flash[:error] = "Failed to track Event A. Error: #{response.code}"
-    end
-
+  def handle_event
+    event_name = params[:event_name]
+    response = EventsService.track_event(event_name)
+    handle_response(response, event_name)
+  end
+  def send_email
+    successful_emails = EventsService.trigger_email_for_fetched_events
+    flash_messages(successful_emails)
     redirect_to root_path
   end
 
-  def event_b
-    response = HTTParty.post(
-      'https://api.iterable.com/api/email/target',
-      body: 'Some email body',
-      headers: {
-        'accept': 'application/json',
-        'content-type': 'application/json',
-      }
-    )
+  private
 
+  def handle_response(response, event_name)
     if response.code == 200
-      flash[:notice] = "Event B triggered successfully!"
+      flash[:notice] = "#{event_name} tracked successfully!"
     else
-      flash[:error] = "Failed to trigger Event B. Error: #{response.code}"
+      flash[:error] = "Failed to track #{event_name}. Error: #{response.code}"
     end
-
     redirect_to root_path
+  end
+
+  def flash_messages(successfully_sent_emails)
+    flash[:notice] ||= ''
+    successfully_sent_emails.each do |event|
+      flash[:notice] += "Email sent for #{event} "
+    end
   end
 end

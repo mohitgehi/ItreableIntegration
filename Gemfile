@@ -69,3 +69,5 @@ end
 gem "httparty", "~> 0.21.0"
 
 gem "rspec-rails", "~> 6.1"
+
+gem "webmock", "~> 3.19"

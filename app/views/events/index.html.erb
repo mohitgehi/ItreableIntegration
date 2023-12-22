@@ -2,7 +2,9 @@
 
 <% if flash[:notice] %>
   <p class="notice">
-    <%= flash[:notice] %>
+    <% flash[:notice].split("\n").each do |line| %>
+      <%= line %><br> <!-- Renders each email on a new line -->
+        <% end %>
   </p>
   <% end %>
 
@@ -12,5 +14,8 @@
       </p>
       <% end %>
 
-        <%= button_to "Create Event A" , event_a_path, method: :post %>
-          <%= button_to "Create Event B" , event_b_path, method: :post %>
+        <%= button_to "Create Event A" , { controller: 'events' , action: 'handle_event' , event_name: 'Event A' },
+          method: :post %>
+          <%= button_to "Create Event B" , { controller: 'events' , action: 'handle_event' , event_name: 'Event B' },
+            method: :post %>
+            <%= button_to "Create Event C" , send_email_path, method: :post %>

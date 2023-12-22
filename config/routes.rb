@@ -8,6 +8,8 @@ Rails.application.routes.draw do
 
   # Defines the root path route ("/")
   root "events#index"
-  post 'event_a', to: 'events#event_a', as: :event_a
-  post 'event_b', to: 'events#event_b', as: :event_b
+  post 'events/event/:event_name', to: 'events#handle_event'
+  # post 'event_a', to: 'events#event_a', as: :event_a
+  # post 'event_b', to: 'events#event_b', as: :event_b
+  post 'send_email', to: 'events#send_email', as: :send_email
 end
